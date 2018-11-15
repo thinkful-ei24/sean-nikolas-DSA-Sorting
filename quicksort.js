@@ -3,10 +3,17 @@ const numbers =
 
 const arr = numbers.split(' ').map(element => parseInt(element, 10));
 
+// nothing to see here
+// definitely not globals
+let qsOperations = 0;
+let mergeOperations = 0;
+
 function quicksort(arr, start = 0, stop = arr.length) {
   if (start >= stop) {
     return arr;
   }
+
+  qsOperations++;
 
   const middle = partition(arr, start, stop);
   quicksort(arr, start, middle);
@@ -18,6 +25,7 @@ function partition(arr, start, stop) {
   let j = start;
   const pivot = arr[stop - 1];
   for (let i = start; i < stop - 1; i++) {
+    qsOperations++;
     if (arr[i] <= pivot) {
       swap(arr, i, j);
       j++;
@@ -33,8 +41,6 @@ function swap(arr, i, j) {
   arr[j] = temp;
 }
 
-console.log(quicksort(arr));
-
 function mSort(arr, start = 0, stop = arr.length) {
   if (arr.length <= 1) {
     return arr;
@@ -43,6 +49,7 @@ function mSort(arr, start = 0, stop = arr.length) {
   let middle = Math.floor((start + stop) / 2);
   let left = arr.slice(0, middle);
   let right = arr.slice(middle, arr.length);
+  mergeOperations++;
 
   left = mSort(left);
   right = mSort(right);
@@ -53,6 +60,7 @@ function merge(left, right, array) {
   let rightIndex = 0;
   let outputIndex = 0;
   while (leftIndex < left.length && rightIndex < right.length) {
+    mergeOperations++;
     if (left[leftIndex] < right[rightIndex]) {
       array[outputIndex++] = left[leftIndex++];
     } else {
@@ -61,11 +69,18 @@ function merge(left, right, array) {
   }
 
   for (let i = leftIndex; i < left.length; i++) {
+    mergeOperations++;
     array[outputIndex++] = left[i];
   }
 
   for (let i = rightIndex; i < right.length; i++) {
+    mergeOperations++;
     array[outputIndex++] = right[i];
   }
   return array;
 }
+
+console.log(quicksort(arr));
+mSort(arr);
+console.log('merge', mergeOperations);
+console.log('quicksort', qsOperations);
